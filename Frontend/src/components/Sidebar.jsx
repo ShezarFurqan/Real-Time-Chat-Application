@@ -1,6 +1,7 @@
-import { Search } from 'lucide-react'
-import React from 'react'
+import { Search, UserRoundPen } from 'lucide-react'
+import React, { useState } from 'react'
 import MessageCard from './MessageCard';
+import EditProfile from './EditProfile';
 
 
 // contacts.js
@@ -65,6 +66,8 @@ const contacts = [
 
 
 const Sidebar = () => {
+    const [openEditProfile, setOpenEditProfile] = useState(false);
+
 
     return (
         <div className='border-gray-700 border-[1.5px] w-96 flex-shrink-0 p-5 h-screen flex flex-col bg-gradient-to-r from-[#1E2738] to-[#1E2738]'>
@@ -78,6 +81,7 @@ const Sidebar = () => {
                     <h2 className='text-lg outfit-700 text-white ml-4'>John Doe</h2>
                     <p className='text-[14px] outfit-300 text-gray-400 ml-4'>Status: Online</p>
                 </div>
+                <UserRoundPen onClick={() => { setOpenEditProfile(true) }} size={24} className='text-gray-400 ml-auto cursor-pointer hover:text-white' />
             </div>
             {/* search */}
             <div className='flex items-center gap-3 mb-8 text-lg outfit-500 bg-[#1B2330] rounded-lg border-[1.5px] p-3 outline-none focus-within:ring-2 focus-within:ring-blue-500 border-gray-700 w-full h-fit mt-6 relative '>
@@ -94,6 +98,8 @@ const Sidebar = () => {
                     <MessageCard key={contact.id} contact={contact} />
                 ))}
             </div>
+            {/* edit profile modal */}
+            {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile} />}
         </div>
     )
 }
