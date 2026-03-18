@@ -67,7 +67,7 @@ const contacts = [
 const Sidebar = () => {
 
     return (
-        <div className='w-96 flex-shrink-0 p-5 h-screen flex flex-col bg-gradient-to-r from-[#1E2738] to-[#1E2738]'>
+        <div className='border-gray-700 border-[1.5px] w-96 flex-shrink-0 p-5 h-screen flex flex-col bg-gradient-to-r from-[#1E2738] to-[#1E2738]'>
             {/* profile status */}
             <div className='flex w-full h-fit py-6 px-8 items-center border-[1.5px] border-gray-700 shadow-2xl rounded-xl'>
                 <div className='relative'>
