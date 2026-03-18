@@ -1,5 +1,5 @@
 import { Phone, Video, EllipsisVertical, Plus, Smile, SendHorizontal } from 'lucide-react'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ChatHeader from './ChatHeader';
 
 export const messages = [
@@ -61,18 +61,46 @@ export const messages = [
   },
 ];
 
-const ChatArea = () => {
-  const inputRef = useRef(null);
+const emojis = [
+  "😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🙂", "🙃",
+  "😉", "😊", "😇", "🥰", "😍", "🤩", "😘", "😗", "☺️", "😚",
+  "😙", "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🤫",
+  "🤔", "🤐", "🤨", "😐", "😑", "😶", "😏", "😒", "🙄", "😬",
+  "🤥", "😌", "😔", "😪", "🤤", "😴", "😷", "🤒", "🤕", "🤢",
+  "🤮", "🤧", "🥵", "🥶", "🥴", "😵", "🤯", "🤠", "🥳", "🥸",
+  "😎", "🤓", "🧐", "😕", "😟", "🙁", "☹️", "😮", "😯", "😲",
+  "😳", "🥺", "😦", "😧", "😨", "😰", "😥", "😢", "😭", "😱",
+  "😖", "😣", "😞", "😓", "😩", "😫", "🥱", "😤", "😡", "😠",
+  "🤬", "😈", "👿", "💀", "☠️", "💩", "🤡", "👹", "👺", "👻",
+  "👽", "👾", "🤖", "💫", "💥", "✨", "🌟", "⚡", "🔥", "💥",
+  "🌈", "☀️", "🌤", "⛅", "🌥", "☁️", "🌧", "⛈", "🌩", "🌨",
+  "❄️", "⛄", "💧", "🌊", "🎃", "🎄", "🎅", "🎁", "❤️", "🧡",
+  "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💯", "✅", "✔️",
+  "❌", "‼️", "❗", "❓", "💬", "💭", "🕊", "🌹", "🔥", "🌺"
+];
 
-  useEffect(()=>{
-    inputRef.current.focus();
-  },[])
+const ChatArea = () => {
+  const [message, setMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const inputRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div className='bg-[#151B29] h-screen w-full  flex flex-col overflow-hidden'>
+    <div className='relative bg-[#151B29] h-screen w-full  flex flex-col overflow-hidden'>
       <ChatHeader />
       {/* messages */}
-      <div className='flex-1 p-5 overflow-y-auto mt-5 flex flex-col gap-4'>
+      <div ref={messagesContainerRef} className='flex-1 p-5 overflow-y-auto mt-5 flex flex-col gap-4'>
         {messages.map((msg) => {
           const isMe = msg.receiverId === "user1"
           return (
@@ -88,11 +116,24 @@ const ChatArea = () => {
       </div>
       {/* message input */}
       <div className='h-20 bg-[#171E2E] border-[1.5px] border-gray-700  flex items-center gap-5 px-5'>
-        <div className='w-12 h-12 bg-[#222A37] rounded-xl border border-gray-700 flex justify-center items-center text-gray-500'><Plus size={32} /></div>
-        <Smile size={28} className='text-gray-400' />
+        <div className='w-12 h-12 bg-[#222A37] hover:text-gray-300 transition-all rounded-xl border border-gray-700 flex justify-center items-center text-gray-500'><Plus size={32} /></div>
+        {showEmojiPicker &&
+          <div className='absolute bottom-[70px] left-[90px] bg-[#171E2E] border border-gray-700 rounded-xl p-3 '>
+            <div className='h-52 overflow-y-auto grid grid-cols-8 gap-2'>
+              {emojis.map((emoji, index) => (
+                <button key={index} onClick={() => {
+                  setMessage(prev => prev + emoji);
+                  setShowEmojiPicker(false);
+                }} className='text-2xl hover:bg-gray-600 rounded-full p-1'>
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>}
+        <Smile onClick={() => { setShowEmojiPicker(!showEmojiPicker) }} size={28} className='text-gray-400 hover:text-white transition-all' />
         <div className='flex-1 h-14 bg-[#222A37] rounded-xl border border-gray-700 flex items-center px-1 pl-3'>
-          <input ref={inputRef} className='bg-transparent outline-none w-full text-md text-gray-300' type="text" placeholder='Type a message...' />
-          <button className='bg-blue-500 text-white p-3 rounded-lg ml-3'><SendHorizontal fill='white' size={24}/></button>
+          <input ref={inputRef} value={message} onChange={(e) => setMessage(e.target.value)} className='bg-transparent outline-none w-full text-md text-gray-300' type="text" placeholder='Type a message...' />
+          <button  className='bg-blue-500 text-white hover:bg-blue-600 transition-all p-3 rounded-lg ml-3'><SendHorizontal fill='white' size={24} /></button>
         </div>
       </div>
     </div>
